@@ -1,5 +1,5 @@
 // This is (some of) the code for the WebSession concept which was introduced in lecture on 9/18.
-// We're storing the user (in the form of the username string for now) when the user logs in, and we 
+// We're storing the user (in the form of the username string for now) when the user logs in, and we
 // reset the session's user when the user logs out.
 
 import { SessionData } from "express-session";
@@ -24,10 +24,8 @@ export default class WebSessionConcept {
     // In Express, the session is created spontaneously when the connection is first made, so we do not need
     // to explicitly allocate a session; we only need to keep track of the user.
 
-    // TODO: Make sure the user is logged out before allowing a new session to start.
-    // Hint: Take a look at how the "end" function makes sure the user is logged in. Keep in mind that a
-    // synchronization like starting a session should just consist of a series of actions that may throw
-    // exceptions and should not have its own control flow.
+    // Make sure the user is logged out before allowing a new session to start.
+    this.isNotActive(session);
     session.user = username;
   }
 
@@ -46,6 +44,12 @@ export default class WebSessionConcept {
   isActive(session: WebSessionDoc) {
     if (session.user === undefined) {
       throw new UnauthenticatedError("Not logged in!");
+    }
+  }
+
+  isNotActive(session: WebSessionDoc) {
+    if (session.user !== undefined) {
+      throw new Error("User is already logged in!");
     }
   }
 }
